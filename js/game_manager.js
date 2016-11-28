@@ -1,10 +1,12 @@
 function GameManager(){
+    // Initializes tetris board, score, and buttons
     this.gridCanvas = document.getElementById('grid-canvas');
     this.nextCanvas = document.getElementById('next-canvas');
     this.scoreContainer = document.getElementById("score-container");
     this.resetButton = document.getElementById('reset-button');
     this.aiButton = document.getElementById('ai-button');
 
+    // Initializes Updater
     this.gravityUpdater = new Updater();
     this.gravityUpdater.skipping = this.aiActive;
     this.gravityUpdater.onUpdate(function(){
@@ -13,6 +15,8 @@ function GameManager(){
     });
 
     var self = this;
+
+    // Listens for user input
     document.addEventListener("keydown", function (event){
         switch(event.which){
             case 32: //drop
@@ -36,6 +40,8 @@ function GameManager(){
                 break;
         }
     });
+
+    // User sets if AI is on or not
     this.aiButton.onclick = function(){
         if (self.aiActive){
             self.stopAI();
@@ -43,18 +49,25 @@ function GameManager(){
             self.startAI();
         }
     }
+
+    // User resets the gameboard
     this.resetButton.onclick = function(){
         self.setup();
     }
 
+
+    // Starts the game
     this.setup();
     this.startAI();
     this.gravityUpdater.checkUpdate(Date.now());
 };
 
+    // Sets up gameboard
 GameManager.prototype.setup = function(){
     this.grid = new Grid(22, 10);
     this.rpg = new RandomPieceGenerator();
+
+    //Sets weights for AI
     this.ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
     this.currentTetrominos = [this.rpg.nextPiece(), this.rpg.nextPiece()];
     this.currentTetromino = this.currentTetrominos[0];
@@ -66,12 +79,15 @@ GameManager.prototype.setup = function(){
     this.actuate();
 };
 
+// Updates board and runs game
 GameManager.prototype.actuate = function(){
+    // Creates a new grid with new piece added
     var _grid = this.grid.clone();
     if (this.currentTetromino != null) {
         _grid.addPiece(this.currentTetromino);
     }
 
+    //Fills Cells
     var context = this.gridCanvas.getContext('2d');
     context.save();
     context.clearRect(0, 0, this.gridCanvas.width, this.gridCanvas.height);
@@ -138,6 +154,7 @@ GameManager.prototype.setcurrentTetromino = function(){
     }
 };
 
+// Moves Tetromino down the grid
 GameManager.prototype.applyGravity = function(){
     if (this.grid.canMoveDown(this.currentTetromino)) {
         this.currentTetromino.row++;
@@ -147,6 +164,7 @@ GameManager.prototype.applyGravity = function(){
     }
 };
 
+// Drops current Tetromino to bottom
 GameManager.prototype.drop = function(){
     while(this.grid.canMoveDown(this.currentTetromino)){
         this.currentTetromino.row++;
@@ -174,6 +192,7 @@ GameManager.prototype.rotate = function(){
     }
 };
 
+// Runs the Best move based on AI
 GameManager.prototype.aiMove = function(){
     this.currentTetromino = this.ai.best(this.grid, this.currentTetrominos, 0).piece;
 };
