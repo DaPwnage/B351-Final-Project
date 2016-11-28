@@ -5,6 +5,7 @@ function AI(heightScore, linesScore, holesScore, bumpinessScore){
     this.bumpinessScore = bumpinessScore;
 };
 
+// Returns max score of current piece at all possible positions, and the pieces location
 AI.prototype.best = function(grid, currentTetrominos, currentTetrominosIndex){
     var best = null;
     var bestScore = null;
