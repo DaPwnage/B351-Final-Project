@@ -13,6 +13,8 @@ function Grid(rows, columns){
 };
 
 // Methods
+
+// Clones grid
 Grid.prototype.clone = function(){
     var _grid = new Grid(this.rows, this.columns);
     for (var r = 0; r < this.rows; r++) {
@@ -23,6 +25,7 @@ Grid.prototype.clone = function(){
     return _grid;
 };
 
+// Clears Full Lines
 Grid.prototype.clearLines = function(){
     var distance = 0;
     var row = new Array(this.columns);
@@ -43,6 +46,8 @@ Grid.prototype.clearLines = function(){
 };
 
 // Computations
+
+// Checks if row is full
 Grid.prototype.isLine = function(row){
     for(var c = 0; c < this.columns; c++){
         if (this.cells[row][c] == 0){
@@ -52,6 +57,7 @@ Grid.prototype.isLine = function(row){
     return true;
 };
 
+// Checks if row contains no tetrominos
 Grid.prototype.isEmptyRow = function(row){
     for(var c = 0; c < this.columns; c++){
         if (this.cells[row][c] == 1){
@@ -61,16 +67,19 @@ Grid.prototype.isEmptyRow = function(row){
     return true;
 };
 
+// Checks if grid has filled up
 Grid.prototype.exceeded = function(){
     return !this.isEmptyRow(0) || !this.isEmptyRow(1);
 };
 
+// Returns height of current game
 Grid.prototype.height = function(){
     var r = 0;
     for(; r < this.rows && this.isEmptyRow(r); r++);
     return this.rows - r;
 };
 
+// Returns number of full lines
 Grid.prototype.lines = function(){
     var count = 0;
     for(var r = 0; r < this.rows; r++){
@@ -81,6 +90,7 @@ Grid.prototype.lines = function(){
     return count;
 };
 
+// Returns number of holes in grid
 Grid.prototype.holes = function(){
     var count = 0;
     for(var c = 0; c < this.columns; c++){
@@ -96,6 +106,7 @@ Grid.prototype.holes = function(){
     return count;
 };
 
+// Returns number of blockades in grid
 Grid.prototype.blockades = function(){
     var count = 0;
     for(var c = 0; c < this.columns; c++){
@@ -111,6 +122,7 @@ Grid.prototype.blockades = function(){
     return count;
 }
 
+// Returns sum of heights of each column
 Grid.prototype.aggregateHeight = function(){
     var total = 0;
     for(var c = 0; c < this.columns; c++){
@@ -119,6 +131,7 @@ Grid.prototype.aggregateHeight = function(){
     return total;
 };
 
+// Returns sum of difference in height from adjacent columns
 Grid.prototype.bumpiness = function(){
     var total = 0;
     for(var c = 0; c < this.columns - 1; c++){
@@ -127,6 +140,7 @@ Grid.prototype.bumpiness = function(){
     return total;
 }
 
+// Returns height of given column
 Grid.prototype.columnHeight = function(column){
     var r = 0;
     for(; r < this.rows && this.cells[r][column] == 0; r++);
@@ -134,6 +148,7 @@ Grid.prototype.columnHeight = function(column){
 };
 
 // Piece
+// Adds Piece
 Grid.prototype.addPiece = function(piece) {
     for(var r = 0; r < piece.cells.length; r++) {
         for (var c = 0; c < piece.cells[r].length; c++) {
@@ -146,6 +161,7 @@ Grid.prototype.addPiece = function(piece) {
     }
 };
 
+// Checks if piece placement is valid
 Grid.prototype.valid = function(piece){
     for(var r = 0; r < piece.cells.length; r++){
         for(var c = 0; c < piece.cells[r].length; c++){
