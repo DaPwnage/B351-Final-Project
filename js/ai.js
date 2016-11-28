@@ -1,17 +1,17 @@
-function AI(heightWeight, linesWeight, holesWeight, bumpinessWeight){
-    this.heightWeight = heightWeight;
-    this.linesWeight = linesWeight;
-    this.holesWeight = holesWeight;
-    this.bumpinessWeight = bumpinessWeight;
+function AI(heightScore, linesScore, holesScore, bumpinessScore){
+    this.heightScore = heightScore;
+    this.linesScore = linesScore;
+    this.holesScore = holesScore;
+    this.bumpinessScore = bumpinessScore;
 };
 
-AI.prototype.best = function(grid, workingPieces, workingPieceIndex){
+AI.prototype.best = function(grid, currentTetrominos, currentTetrominosIndex){
     var best = null;
     var bestScore = null;
-    var workingPiece = workingPieces[workingPieceIndex];
+    var currentTetromino = currentTetrominos[currentTetrominosIndex];
 
     for(var rotation = 0; rotation < 4; rotation++){
-        var _piece = workingPiece.clone();
+        var _piece = currentTetromino.clone();
         _piece.rotate(rotation);
 
         while(grid.canMoveLeft(_piece)){
@@ -28,10 +28,10 @@ AI.prototype.best = function(grid, workingPieces, workingPieceIndex){
             _grid.addPiece(_pieceSet);
 
             var score = null;
-            if (workingPieceIndex == (workingPieces.length - 1)) {
-                score = -this.heightWeight * _grid.aggregateHeight() + this.linesWeight * _grid.lines() - this.holesWeight * _grid.holes() - this.bumpinessWeight * _grid.bumpiness();
+            if (currentTetrominosIndex == (currentTetrominos.length - 1)) {
+                score = -this.heightScore * _grid.aggregateHeight() + this.linesScore * _grid.lines() - this.holesScore * _grid.holes() - this.bumpinessScore * _grid.bumpiness();
             }else{
-                score = this.best(_grid, workingPieces, workingPieceIndex + 1).score;
+                score = this.best(_grid, currentTetrominos, currentTetrominosIndex + 1).score;
             }
 
             if (score > bestScore || bestScore == null){

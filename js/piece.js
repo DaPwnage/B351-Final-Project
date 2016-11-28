@@ -1,3 +1,4 @@
+
 function Piece(cells){
     this.cells = cells;
 

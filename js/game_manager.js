@@ -56,8 +56,8 @@ GameManager.prototype.setup = function(){
     this.grid = new Grid(22, 10);
     this.rpg = new RandomPieceGenerator();
     this.ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
-    this.workingPieces = [this.rpg.nextPiece(), this.rpg.nextPiece()];
-    this.workingPiece = this.workingPieces[0];
+    this.currentTetrominos = [this.rpg.nextPiece(), this.rpg.nextPiece()];
+    this.currentTetromino = this.currentTetrominos[0];
 
     this.isOver = true;
     this.score = 0;
@@ -68,8 +68,8 @@ GameManager.prototype.setup = function(){
 
 GameManager.prototype.actuate = function(){
     var _grid = this.grid.clone();
-    if (this.workingPiece != null) {
-        _grid.addPiece(this.workingPiece);
+    if (this.currentTetromino != null) {
+        _grid.addPiece(this.currentTetromino);
     }
 
     var context = this.gridCanvas.getContext('2d');
@@ -90,7 +90,7 @@ GameManager.prototype.actuate = function(){
     context = this.nextCanvas.getContext('2d');
     context.save();
     context.clearRect(0, 0, this.nextCanvas.width, this.nextCanvas.height);
-    var next = this.workingPieces[1];
+    var next = this.currentTetrominos[1];
     var xOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 10 : next.dimension == 4 ? 0 : null;
     var yOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 20 : next.dimension == 4 ? 10 : null;
     for(var r = 0; r < next.dimension; r++){
@@ -120,15 +120,15 @@ GameManager.prototype.stopAI = function(){
     this.gravityUpdater.skipping = false;
 };
 
-GameManager.prototype.setWorkingPiece = function(){
-    this.grid.addPiece(this.workingPiece);
+GameManager.prototype.setcurrentTetromino = function(){
+    this.grid.addPiece(this.currentTetromino);
     this.score += this.grid.clearLines();
     if (!this.grid.exceeded()){
-        for(var i = 0; i < this.workingPieces.length - 1; i++){
-            this.workingPieces[i] = this.workingPieces[i + 1];
+        for(var i = 0; i < this.currentTetrominos.length - 1; i++){
+            this.currentTetrominos[i] = this.currentTetrominos[i + 1];
         }
-        this.workingPieces[this.workingPieces.length - 1] = this.rpg.nextPiece();
-        this.workingPiece = this.workingPieces[0];
+        this.currentTetrominos[this.currentTetrominos.length - 1] = this.rpg.nextPiece();
+        this.currentTetromino = this.currentTetrominos[0];
         if (this.aiActive) {
             this.aiMove();
             this.gravityUpdater.skipping = true;
@@ -139,43 +139,41 @@ GameManager.prototype.setWorkingPiece = function(){
 };
 
 GameManager.prototype.applyGravity = function(){
-    if (this.grid.canMoveDown(this.workingPiece)) {
-        this.workingPiece.row++;
+    if (this.grid.canMoveDown(this.currentTetromino)) {
+        this.currentTetromino.row++;
     }else{
         this.gravityUpdater.skipping = false;
-        this.setWorkingPiece();
+        this.setcurrentTetromino();
     }
 };
 
 GameManager.prototype.drop = function(){
-    while(this.grid.canMoveDown(this.workingPiece)){
-        this.workingPiece.row++;
+    while(this.grid.canMoveDown(this.currentTetromino)){
+        this.currentTetromino.row++;
     }
 };
 
 GameManager.prototype.moveLeft = function(){
-    if (this.grid.canMoveLeft(this.workingPiece)){
-        this.workingPiece.column--;
+    if (this.grid.canMoveLeft(this.currentTetromino)){
+        this.currentTetromino.column--;
     }
 };
 
 GameManager.prototype.moveRight = function(){
-    if (this.grid.canMoveRight(this.workingPiece)){
-        this.workingPiece.column++;
+    if (this.grid.canMoveRight(this.currentTetromino)){
+        this.currentTetromino.column++;
     }
 };
 
 GameManager.prototype.rotate = function(){
-    var offset = this.grid.rotateOffset(this.workingPiece);
+    var offset = this.grid.rotateOffset(this.currentTetromino);
     if (offset != null){
-        this.workingPiece.rotate(1);
-        this.workingPiece.row += offset.rowOffset;
-        this.workingPiece.column += offset.columnOffset;
+        this.currentTetromino.rotate(1);
+        this.currentTetromino.row += offset.rowOffset;
+        this.currentTetromino.column += offset.columnOffset;
     }
 };
 
 GameManager.prototype.aiMove = function(){
-    this.workingPiece = this.ai.best(this.grid, this.workingPieces, 0).piece;
+    this.currentTetromino = this.ai.best(this.grid, this.currentTetrominos, 0).piece;
 };
-
-
