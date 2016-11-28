@@ -125,7 +125,31 @@ Grid.prototype.bumpiness = function(){
         total += Math.abs(this.columnHeight(c) - this.columnHeight(c+ 1));
     }
     return total;
+    // var diff = Math.abs(this.maxCol() = this.minCol());
+    // return diff;
 }
+
+// Grid.prototype.maxCol = function() {
+//   var maxcol = 0;
+//   for(var c = 0; c , this.columns - 1; c++) {
+//     if (this.columnHeight(c) > this.columnHeight(maxCol)) {
+//       maxCol = c;
+//     }
+//   }
+//   return maxCol;
+//
+// }
+//
+// Grid.prototype.minCol = function() {
+//   var mincol = 0;
+//   for(var c = 0; c , this.columns - 1; c++) {
+//     if (this.columnHeight(c) < this.columnHeight(minCol)) {
+//       minCol = c;
+//     }
+//   }
+//   return minCol;
+//
+// }
 
 Grid.prototype.columnHeight = function(column){
     var r = 0;
